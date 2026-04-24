@@ -1,4 +1,4 @@
-name: Build APK (Universal Fix)
+name: Build APK (No More YAML Errors)
 
 on:
   push:
@@ -17,73 +17,69 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Create project files if missing
+      - name: Create missing project files (safe method)
         run: |
           if [ ! -f settings.gradle ]; then
-            cat > settings.gradle << 'SETEOF'
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-        mavenCentral()
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-rootProject.name = "FolderCam"
-include ':app'
-SETEOF
+            echo "pluginManagement {" > settings.gradle
+            echo "    repositories {" >> settings.gradle
+            echo "        gradlePluginPortal()" >> settings.gradle
+            echo "        google()" >> settings.gradle
+            echo "        mavenCentral()" >> settings.gradle
+            echo "    }" >> settings.gradle
+            echo "}" >> settings.gradle
+            echo "dependencyResolutionManagement {" >> settings.gradle
+            echo "    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)" >> settings.gradle
+            echo "    repositories {" >> settings.gradle
+            echo "        google()" >> settings.gradle
+            echo "        mavenCentral()" >> settings.gradle
+            echo "    }" >> settings.gradle
+            echo "}" >> settings.gradle
+            echo "rootProject.name = \"FolderCam\"" >> settings.gradle
+            echo "include ':app'" >> settings.gradle
           fi
 
           if [ ! -f app/build.gradle ]; then
             mkdir -p app
-            cat > app/build.gradle << 'APPEOF'
-plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-}
-
-android {
-    namespace 'com.foldercam.manager'
-    compileSdk 34
-
-    defaultConfig {
-        applicationId "com.foldercam.manager"
-        minSdk 21
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-}
-
-dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.11.0'
-}
-APPEOF
+            echo "plugins {" > app/build.gradle
+            echo "    id 'com.android.application'" >> app/build.gradle
+            echo "    id 'org.jetbrains.kotlin.android'" >> app/build.gradle
+            echo "}" >> app/build.gradle
+            echo "" >> app/build.gradle
+            echo "android {" >> app/build.gradle
+            echo "    namespace 'com.foldercam.manager'" >> app/build.gradle
+            echo "    compileSdk 34" >> app/build.gradle
+            echo "" >> app/build.gradle
+            echo "    defaultConfig {" >> app/build.gradle
+            echo "        applicationId 'com.foldercam.manager'" >> app/build.gradle
+            echo "        minSdk 21" >> app/build.gradle
+            echo "        targetSdk 34" >> app/build.gradle
+            echo "        versionCode 1" >> app/build.gradle
+            echo "        versionName '1.0'" >> app/build.gradle
+            echo "    }" >> app/build.gradle
+            echo "" >> app/build.gradle
+            echo "    buildTypes {" >> app/build.gradle
+            echo "        release {" >> app/build.gradle
+            echo "            minifyEnabled false" >> app/build.gradle
+            echo "            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'" >> app/build.gradle
+            echo "        }" >> app/build.gradle
+            echo "    }" >> app/build.gradle
+            echo "    compileOptions {" >> app/build.gradle
+            echo "        sourceCompatibility JavaVersion.VERSION_1_8" >> app/build.gradle
+            echo "        targetCompatibility JavaVersion.VERSION_1_8" >> app/build.gradle
+            echo "    }" >> app/build.gradle
+            echo "    kotlinOptions {" >> app/build.gradle
+            echo "        jvmTarget = '1.8'" >> app/build.gradle
+            echo "    }" >> app/build.gradle
+            echo "}" >> app/build.gradle
+            echo "" >> app/build.gradle
+            echo "dependencies {" >> app/build.gradle
+            echo "    implementation 'androidx.core:core-ktx:1.12.0'" >> app/build.gradle
+            echo "    implementation 'androidx.appcompat:appcompat:1.6.1'" >> app/build.gradle
+            echo "    implementation 'com.google.android.material:material:1.11.0'" >> app/build.gradle
+            echo "}" >> app/build.gradle
           fi
 
-          echo "✅ Project files ready"
+          echo "✅ सभी ज़रूरी फ़ाइलें तैयार हैं"
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
