@@ -1,4 +1,4 @@
-name: Master APK Builder (No Draft Errors)
+name: Build APK (Universal Fix)
 
 on:
   push:
@@ -17,12 +17,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # अब तक का सबसे शातिर तरीका – सीधे root में project बनाएगा
-      - name: Clone real project (Draft-free guarantee)
+      - name: Create project files if missing
         run: |
-          echo "🛠️  अब कोई draft नहीं, सब कुछ खुद जोड़ रहा हूं..."
-          
-          # अगर settings.gradle सच में गायब है तो बनाओ
           if [ ! -f settings.gradle ]; then
             cat > settings.gradle << 'SETEOF'
 pluginManagement {
@@ -44,7 +40,6 @@ include ':app'
 SETEOF
           fi
 
-          # अगर app/build.gradle गायब है तो पूरा बना दो
           if [ ! -f app/build.gradle ]; then
             mkdir -p app
             cat > app/build.gradle << 'APPEOF'
@@ -88,7 +83,7 @@ dependencies {
 APPEOF
           fi
 
-          echo "✅ ज़रूरी फ़ाइलें तैयार हैं!"
+          echo "✅ Project files ready"
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
